@@ -86,4 +86,39 @@
 	- `sudo systemctl restart networking.service`
 	- `sudo systemctl restart bind9`
 	- `ping www.google.com`
+- Creating zones
+	- `sudo nano /etc/bind/named.conf.local`
+	- add
+	```
+	zone "wcsc.com" {
+		type master;
+		file "/etc/bind/forward.wcsc.com";
+		allow-transfer { 172.20.241.27; };
+		also-notify { 172.20.241.27; };
+	};
 	
+	zone "20.172.in-addr.arpa" {
+		type master;
+		file "/etc/bind/reverse.wcsc.com";
+		allow-transfer { 172.20.241.27; };
+		also-notify { 172.20.241.27; };
+	};
+	```
+	- create the zone files mentioned in the configuration
+		- `sudo touch /etc/bind/forward.wcsc.com`
+		- `sudo touch /etc/bind/forward.wcsc.com`
+	- add zone content 
+		- add lines `sudo nano /etc/bind/forward.wcsc.com`
+		- ![forward.wcsc.com alternative text](https://github.com/manwthglasses/BlueteamNotes/.forwardwcsc.jpg)
+		- add lines `sudo nano /etc/bind/reverse.wcsc.com`
+		- ![reverse.wcsc.com alternative text](https://github.com/manwthglasses/BlueteamNotes/.reversewcsc.jpg)
+	- Troubleshooting
+		- `sudo named-checkconf/etc/bind/named.conf` will output the errors for fixing
+- Verify 
+	- `sudo systemctl restart bind9`
+	- verify with 
+	`nslookup 172.20.240.11`
+	`nslookup 172.20.240.23`
+	`nslookup WEB.wcsc.com`
+	`nslookup DNS.wcsc.com`
+	`ping WEB.wcsc.com`	
