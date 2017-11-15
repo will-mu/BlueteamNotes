@@ -109,9 +109,9 @@
 		- `sudo touch /etc/bind/forward.wcsc.com`
 	- add zone content 
 		- add lines `sudo nano /etc/bind/forward.wcsc.com`
-		- ![forward.wcsc.com alternative text](https://github.com/manwthglasses/BlueteamNotes/.forwardwcsc.jpg)
+		- ![forward.wcsc.com alternative text](https://github.com/manwthglasses/BlueteamNotes/blob/master/.forwardwcsc.jpg)
 		- add lines `sudo nano /etc/bind/reverse.wcsc.com`
-		- ![reverse.wcsc.com alternative text](https://github.com/manwthglasses/BlueteamNotes/.reversewcsc.jpg)
+		- ![reverse.wcsc.com alternative text](https://github.com/manwthglasses/BlueteamNotes/blob/master/.reversewcsc.jpg)
 	- Troubleshooting
 		- `sudo named-checkconf/etc/bind/named.conf` will output the errors for fixing
 - Verify 
