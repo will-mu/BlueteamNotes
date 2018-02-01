@@ -1,12 +1,52 @@
 (Ubuntu) DNS Notes
 ======
+### Contact
+- Slack: @manwthglasses on [slack](wcscusf.slack.com)
+- Email: wmurphy1@mail.usf.edu
 
+### Table 
+1. [Prerequisites](#prerequisites)
+2. [Summary](#summary)
+3. [Background](#background)
+4. [Installation](#installation) 
+5. [Configuration](#configuration)
+6. [Helpful links](#helpful-links)
+
+### Prerequisites
+1. [Download virtualization program](https://www.virtualbox.org/wiki/Downloads)
+2. Download ISO images
+3. [Setup virtual environment](https://github.com/Nanjuan/WCSC-Blue-Team/blob/master/Network%20Adapter%20Information.md) 
+4. [Setup Ubuntu ISP](https://silexone.github.io/guides/nestor/ISPsetup.html)
+5. Setup PFsense box
+
+### Summary
+![box alternative text](https://github.com/manwthglasses/BlueteamNotes/blob/master/.box.png)
+
+### Background
 ##### DMZ (Demilitarized Zone)
 - Outward facing network inbetween trusted internal network (LAN) and untrusted external network such as the internet
 - Segregated from personal files
 - Typically containing devices accessible to internet traffic, such as Web and DNS servers
-	
-### Installation and set up
+
+##### DNS (Domain Name Server)
+- Server maintaining a directory of domain names and translate them to IP addresses
+	- www.google.com -> 201.23.52.1
+	- 201.23.52.1 -> www.google.com
+- Internet Service Providers view DNS servers to translate a web address you type into an IP address
+- DNS Zone: a set of DNS records for a single domain 
+- DNS Record : single entry of instructions on handling requests based on types for a zone
+	- _A Record_ : Specifies IPv4 Address for a given host 
+		- www.google.com -> 201.23.52.1
+	- _AAAA Record_ (quad-A record): specifies IPv6 address for given host
+		- www.google.com -> 2001:db8::7348
+	- _CNAME Record_: specifies a domain name that has to be queried in order to resolve the original DNS query 
+		- also used to create aliases of domain names
+		- same server can be accessesed through documents.example.com and docs.example.com because of CNAME
+	- _MX Record_: specifies a mail exchange server for a DNS domain name
+		- the information is used by Simple Mail Transfer Protocol (SMTP) to route emails to proper hosts
+	- _PTR Record_: (reverse of A and AAAA DNS Records) used to look up domain names based on IP addresses
+
+### Installation 
 - [Install Ubuntu](https://www.ubuntu.com/download/server)
 - Change network options to `Host-Only, DMZ`
 - Type in `ip link show` into terminal and you should see: lo, enp0s3
@@ -29,25 +69,8 @@
 	- verify connectivity with `ping 8.8.8.8` 
 		- `8.8.8.8` is google's DNS server
 
-##### DNS (Domain Name Server)
-- Server maintaining a directory of domain names and translate them to IP addresses
-	- www.google.com -> 201.23.52.1
-	- 201.23.52.1 -> www.google.com
-- Internet Service Providers view DNS servers to translate a web address you type into an IP address
-- DNS Zone: a set of DNS records for a single domain 
-- DNS Record : single entry of instructions on handling requests based on types for a zone
-	- _A Record_ : Specifies IPv4 Address for a given host 
-		- www.google.com -> 201.23.52.1
-	- _AAAA Record_ (quad-A record): specifies IPv6 address for given host
-		- www.google.com -> 2001:db8::7348
-	- _CNAME Record_: specifies a domain name that has to be queried in order to resolve the original DNS query 
-		- also used to create aliases of domain names
-		- same server can be accessesed through documents.example.com and docs.example.com because of CNAME
-	- _MX Record_: specifies a mail exchange server for a DNS domain name
-		- the information is used by Simple Mail Transfer Protocol (SMTP) to route emails to proper hosts
-	- _PTR Record_: (reverse of A and AAAA DNS Records) used to look up domain names based on IP addresses
 
-### Configure DNS Server
+### Configuration
 - [Helpful link for configuration process](https://www.ostechnix.com/install-and-configure-dns-server-ubuntu-16-04-lts/)
 - [Helpful link for understanding bind](http://www.firewall.cx/linux-knowledgebase-tutorials/system-and-network-services/829-linux-bind-introduction.html)
 - Update and install bind
@@ -128,3 +151,8 @@
 	`nslookup WEB.wcsc.com`
 	`nslookup DNS.wcsc.com`
 	`ping WEB.wcsc.com`	
+
+### Troubleshooting
+
+### Helpful Links
+	
