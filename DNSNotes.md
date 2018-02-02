@@ -34,6 +34,9 @@
 	- 201.23.52.1 -> www.google.com
 - Internet Service Providers view DNS servers to translate a web address you type into an IP address
 - DNS Zone: a set of DNS records for a single domain 
+- Configuration
+	- Primary Master Server: term for reading data for a zone from a file on the server
+	- Secondary Master: term for getting the zone data from another DNS server that is the Primary Master for that zone
 - DNS Record : single entry of instructions on handling requests based on types for a zone
 	- _A Record_ : Specifies IPv4 Address for a given host 
 		- www.google.com -> 201.23.52.1
@@ -76,8 +79,9 @@
 - Update and install bind
 	- `sudo apt-get update`
 	- `sudo apt-get upgrade`
-	- `sudo apt-get install bind9 bind9utils bind9doc`
-	- bind is a widely used domain name system software for your server to become a DNS for your network 
+	- `sudo apt-get install bind9 bind9utils bind9doc dnsutils`
+	- bind is a widely used domain name system software for your server to become a DNS for your network
+	- dnsutils is a package for testing and troubleshooting DNS related issues, including a tool named dig 
 - Configure caching name server
 	- `sudo nano /etc/bind/named.conf.options`
 	- uncomment and change the lines 
@@ -93,6 +97,8 @@
 		8.8.4.4;
 	};
 	```
+	- Because of this, if our cached server fails to recognize a IP address, our server will forward the request to 8.8.8.8 and 8.8.4.4.
+		- 8.8.8.8 and 8.8.4.4 are both public Google DNS servers.  
 - Change dns-nameservers so that bind will handle it 
 	- `sudo nano /etc/network/interfaces`
 	- change to 
@@ -115,6 +121,7 @@
 	- `ping www.google.com`
 		- verify internet connection
 - Creating zones
+	- Adding a DNS zone, and therefore making this a Primary Master Server. 
 	- `sudo nano /etc/bind/named.conf.local`
 	- add
 	```
@@ -140,8 +147,6 @@
 		- ![forward.wcsc.com alternative text](https://github.com/manwthglasses/BlueteamNotes/blob/master/.forwardwcsc.jpg)
 		- add lines `sudo nano /etc/bind/reverse.wcsc.com`
 		- ![reverse.wcsc.com alternative text](https://github.com/manwthglasses/BlueteamNotes/blob/master/.reversewcsc.jpg)
-	- Troubleshooting
-		- `sudo named-checkconf /etc/bind/named.conf` will output the errors for fixing
 - Verify 
 	- `sudo systemctl restart bind9`
 	- verify with 
@@ -153,6 +158,7 @@
 	`ping WEB.wcsc.com`	
 
 ### Troubleshooting
+	- 'sudo named-checkconf /etc/bind/named.conf' will output the erros for fixing
 
 ### Helpful Links
 	
