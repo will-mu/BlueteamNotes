@@ -34,9 +34,12 @@
 	- 201.23.52.1 -> www.google.com
 - Internet Service Providers view DNS servers to translate a web address you type into an IP address
 - DNS Zone: a set of DNS records for a single domain 
+<<<<<<< HEAD
 - Configuration
 	- Primary Master Server: term for reading data for a zone from a file on the server
 	- Secondary Master: term for getting the zone data from another DNS server that is the Primary Master for that zone
+=======
+>>>>>>> de803de0cb78c74619647f2a3dba381f76505c51
 - DNS Record : single entry of instructions on handling requests based on types for a zone
 	- _A Record_ : Specifies IPv4 Address for a given host 
 		- www.google.com -> 201.23.52.1
@@ -158,7 +161,10 @@
 	`ping WEB.wcsc.com`	
 
 ### Troubleshooting
+<<<<<<< HEAD
 	- 'sudo named-checkconf /etc/bind/named.conf' will output the erros for fixing
+=======
+>>>>>>> de803de0cb78c74619647f2a3dba381f76505c51
 
 ### Helpful Links
 	
