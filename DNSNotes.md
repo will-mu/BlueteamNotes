@@ -1,10 +1,5 @@
 (Ubuntu) DNS Notes
 ======
----
-layout: post
-title: Ubuntu DNS
-author: William Murphy
----
 ### Contact
 - Slack: @manwthglasses on [slack](wcscusf.slack.com)
 - Email: wmurphy1@mail.usf.edu
@@ -66,6 +61,8 @@ author: William Murphy
 	- _PTR Record_: (reverse of A and AAAA DNS Records) used to look up domain names based on IP addresses
 
 - DNS Record: a single entry of instructions on handling requests for a zone (based on types)
+DNS Record Type | Description
+---|---
 _A Record_ | Specifies IPv4 Address for a given host (www.google.com translates to 201.23.51.1)
 _AAAA Record_ (Quad-A record) | specifies IPv6 address for a given host (www.google.com translates to 2001:db8::7348)
 _CNAME Record_ | specifies a domain name that has to be queried in order to resolve the original DNS query; used to create aliases
