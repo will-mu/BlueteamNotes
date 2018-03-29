@@ -1,5 +1,10 @@
 (Ubuntu) DNS Notes
 ======
+---
+layout: post
+title: Ubuntu DNS
+author: William Murphy
+---
 ### Contact
 - Slack: @manwthglasses on [slack](wcscusf.slack.com)
 - Email: wmurphy1@mail.usf.edu
@@ -29,14 +34,25 @@
 - Typically containing devices accessible to internet traffic, such as Web and DNS servers
 
 ##### DNS (Domain Name Server)
-- Server maintaining a directory of domain names and translate them to IP addresses
+- DNS stands for Domain Name Servers and serve the purpose of maintaining a directory of domain names and translating them to IP addresses. 
+- All websites you visit are normally accessed through domain names such as "www.google.com" but are then translated to the actual IP address that will let you reach that site.
+- DNS are the servers that translate the domain names to the IP addresses and even vice versa if needed. 
 	- www.google.com -> 201.23.52.1
 	- 201.23.52.1 -> www.google.com
-- Internet Service Providers view DNS servers to translate a web address you type into an IP address
-- DNS Zone: a set of DNS records for a single domain 
+- Domain Name Space 
+  - The Domain Name Space is a term for the hierarchal structure in which the domain names are distributed. 
+  - The Domain Name Space is an inverted tree that would read a domain name starting from right to left, and branch down by every designated dot.
+    - ex: "my.usf.edu" would be found in the domain name space beginning at the root node (instead of a "/" like in UNIX filesystems, it is designated with a "."), then would branch down to the ".edu" branch, and then further to the "usf.edu" branch where the domain name would ultimately be held.
+- DNS Zone: a set of DNS records for all the domain names within the specified branch, but excluding any children branches that are designated their own zones
 - Configuration
 	- Primary Master Server: term for reading data for a zone from a file on the server
 	- Secondary Master: term for getting the zone data from another DNS server that is the Primary Master for that zone
+  - Resolvers: a term for the clients that access nameservers
+    - often a very simple set of libray routines that perform the basic task of querying a name server, interpreting the response from that server, and then returning the information to the program requesting it. 
+    - Queries is the term for when a resolver requests an IP address or a domain name from a server. There are two different types of queries: 
+      - Recursive: a recursive query is one that takes the domain requested and queries it to the root zone name server, that would then refer it to another server further down the branch, that would then keep referring it until it reached the zone for the domain. 
+        ex: a recursive query for the address of "my.usf.edu" would first query the address to the root server, who would refer it to the ".edu" server, who would refer it to the ".usf" server that would be authorative for that domain and return the address.
+      - Iterative" an iterative query is the component of the recursive query that gives the best answer, whether that be a referral to another server further down the branch or the actual address requested. 
 - DNS Record : single entry of instructions on handling requests based on types for a zone
 	- _A Record_ : Specifies IPv4 Address for a given host 
 		- www.google.com -> 201.23.52.1
@@ -48,6 +64,13 @@
 	- _MX Record_: specifies a mail exchange server for a DNS domain name
 		- the information is used by Simple Mail Transfer Protocol (SMTP) to route emails to proper hosts
 	- _PTR Record_: (reverse of A and AAAA DNS Records) used to look up domain names based on IP addresses
+
+- DNS Record: a single entry of instructions on handling requests for a zone (based on types)
+_A Record_ | Specifies IPv4 Address for a given host (www.google.com translates to 201.23.51.1)
+_AAAA Record_ (Quad-A record) | specifies IPv6 address for a given host (www.google.com translates to 2001:db8::7348)
+_CNAME Record_ | specifies a domain name that has to be queried in order to resolve the original DNS query; used to create aliases
+_MX Record_ | specifies a mail exchange server for a DNS domain name, used through Simple Mail Transfer protocol (SMTP) to route emails to proper hosts
+_PTR Record_ | used to look up domain names based on IP addresses; reverse of A and AAAA records (201.23.41.1 translates to www.google.com)
 
 ### Installation 
 - [Install Ubuntu](https://www.ubuntu.com/download/server)
