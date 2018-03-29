@@ -61,13 +61,13 @@
 	- _PTR Record_: (reverse of A and AAAA DNS Records) used to look up domain names based on IP addresses
 
 - DNS Record: a single entry of instructions on handling requests for a zone (based on types)
-DNS Record Type | Description
----|---
-_A Record_ | Specifies IPv4 Address for a given host (www.google.com translates to 201.23.51.1)
-_AAAA Record_ (Quad-A record) | specifies IPv6 address for a given host (www.google.com translates to 2001:db8::7348)
-_CNAME Record_ | specifies a domain name that has to be queried in order to resolve the original DNS query; used to create aliases
-_MX Record_ | specifies a mail exchange server for a DNS domain name, used through Simple Mail Transfer protocol (SMTP) to route emails to proper hosts
-_PTR Record_ | used to look up domain names based on IP addresses; reverse of A and AAAA records (201.23.41.1 translates to www.google.com)
+| DNS Record Type | Description |
+| --- | --- |
+| _A Record_ | Specifies IPv4 Address for a given host (www.google.com translates to 201.23.51.1) |
+| _AAAA Record_ (Quad-A record) | specifies IPv6 address for a given host (www.google.com translates to 2001:db8::7348) |
+| _CNAME Record_ | specifies a domain name that has to be queried in order to resolve the original DNS query; used to create aliases |
+| _MX Record_ | specifies a mail exchange server for a DNS domain name, used through Simple Mail Transfer protocol (SMTP) to route emails to proper hosts |
+| _PTR Record_ | used to look up domain names based on IP addresses; reverse of A and AAAA records (201.23.41.1 translates to www.google.com) | 
 
 ### Installation 
 - [Install Ubuntu](https://www.ubuntu.com/download/server)
