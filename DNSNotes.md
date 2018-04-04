@@ -1,3 +1,8 @@
+---
+layout: post
+title: Ubuntu DNS
+author: William Murphy
+---
 (Ubuntu) DNS Notes
 ======
 ### Contact
@@ -60,18 +65,11 @@
 		- the information is used by Simple Mail Transfer Protocol (SMTP) to route emails to proper hosts
 	- _PTR Record_: (reverse of A and AAAA DNS Records) used to look up domain names based on IP addresses
 
-- DNS Record: a single entry of instructions on handling requests for a zone (based on types)
-| DNS Record Type | Description |
-| --- | --- |
-| _A Record_ | Specifies IPv4 Address for a given host (www.google.com translates to 201.23.51.1) |
-| _AAAA Record_ (Quad-A record) | specifies IPv6 address for a given host (www.google.com translates to 2001:db8::7348) |
-| _CNAME Record_ | specifies a domain name that has to be queried in order to resolve the original DNS query; used to create aliases |
-| _MX Record_ | specifies a mail exchange server for a DNS domain name, used through Simple Mail Transfer protocol (SMTP) to route emails to proper hosts |
-| _PTR Record_ | used to look up domain names based on IP addresses; reverse of A and AAAA records (201.23.41.1 translates to www.google.com) | 
-
 ### Installation 
 - [Install Ubuntu](https://www.ubuntu.com/download/server)
 - Change network options to `Host-Only, DMZ`
+  - ![Network Options](https://github.com/manwthglasses/BlueteamNotes/blob/master/.Network.png)
+  - Select the correct Virtual Machine, click on settings, click on Network, change adapter 1 settings to Host-only and then change to your corresponding DMZ adapter
 - Type in `ip link show` into terminal and you should see: lo, enp0s3
 	- `ip link show` : shows information for all interfaces 
 	- lo : loopback
@@ -82,16 +80,16 @@
 	```
 	auto enp0s3
 	iface enp0s3 inet static
-	address 172.20.240.23
+	address 127.20.240.23
 	netmask 255.255.255.0
-	gateway 172.20.240.254
+	gateway 127.20.240.254
 	dns-nameservers 8.8.8.8
 	```
 	- type `sudo service networking restart`
 	- verify netowrk interfaces with `ifconfig`
 	- verify connectivity with `ping 8.8.8.8` 
+    - should return with statistics for packets transmitted and recieved, and can exit with Ctrl+C
 		- `8.8.8.8` is google's DNS server
-
 
 ### Configuration
 - [Helpful link for configuration process](https://www.ostechnix.com/install-and-configure-dns-server-ubuntu-16-04-lts/)
@@ -101,7 +99,7 @@
 	- `sudo apt-get upgrade`
 	- `sudo apt-get install bind9 bind9utils bind9doc dnsutils`
 	- bind is a widely used domain name system software for your server to become a DNS for your network
-	- dnsutils is a package for testing and troubleshooting DNS related issues, including a tool named dig 
+	- dnsutils is a package for testing and troubleshooting DNS related issues, including tools such as dig and nslookup
 - Configure caching name server
 	- `sudo nano /etc/bind/named.conf.options`
 	- uncomment and change the lines 
@@ -125,21 +123,18 @@
 	```
 	auto enp0s3
 	iface enp0s3 inet static
-		address 172.20.240.23
+		address 127.20.240.23
 		netmask 255.255.255.0
-		gateway 172.20.240.254
-		dns-nameservers 172.0.0.1
+		gateway 127.20.240.254
+		dns-nameservers 127.0.0.1
 	```
 - Refresh 
 	- `sudo ip addr flush enp0s3`
 		- `ip addr flush` removes all addresses for the interface `enp0s3`
 	- `sudo systemctl restart networking.service`
-		- `systemctl` is the system manager
-		- `restart networking.service` will restart the networking service that `systemctl` manages
-	- `sudo systemctl restart bind9`
-		- will restart bind9
-	- `ping www.google.com`
-		- verify internet connection
+		- `systemctl` is the system manager for services on machine
+		- `restart networking.service` will restart the networking service
+		- verify internet connection again with `ping 8.8.8.8` 
 - Creating zones
 	- Adding a DNS zone, and therefore making this a Primary Master Server. 
 	- `sudo nano /etc/bind/named.conf.local`
@@ -148,15 +143,15 @@
 	zone "wcsc.com" {
 		type master;
 		file "/etc/bind/forward.wcsc.com";
-		allow-transfer { 172.20.241.27; };
-		also-notify { 172.20.241.27; };
+		allow-transfer { 127.20.241.27; };
+		also-notify { 127.20.241.27; };
 	};
 	
-	zone "20.172.in-addr.arpa" {
+	zone "20.127.in-addr.arpa" {
 		type master;
 		file "/etc/bind/reverse.wcsc.com";
-		allow-transfer { 172.20.241.27; };
-		also-notify { 172.20.241.27; };
+		allow-transfer { 127.20.241.27; };
+		also-notify { 127.20.241.27; };
 	};
 	```
 	- create the zone files mentioned in the configuration
@@ -165,6 +160,23 @@
 	- add zone content 
 		- add lines `sudo nano /etc/bind/forward.wcsc.com`
 		- ![forward.wcsc.com alternative text](https://github.com/manwthglasses/BlueteamNotes/blob/master/.forwardwcsc.jpg)
+      - The '@' notation delineates the name of the zone and can be used whenever the domain name is the same as the origin
+      - The 'IN' stands for Internet and specifies the class of data
+      - The next column specifies the type of record, and therefore 'SOA' indicates that this name server is authorative for this zone
+      - The next column is the name of the primary master name server 
+      - The last field is the mail address of the person in charge of the data (DNS syntax formats the "@" as a "." so "root.wcsc.com." translates to "root@wcsc.com.")
+        - It is common practice to use "root" as the email address
+      - The parentheses allow the record to expand the fields past one line for readability purposes
+        - ";" indicate the beginning of a comment so name servers will ignore anything past ";" on a line
+        - The serial field is meant to indicate how updated a name server is so that slave name servers are able to decide if their zone data is out of date by comparing their serial values to the primary name server's serial values
+          - The serial field isn't crucial to this lab but it is important to know that the common practices are
+            1. Starting the serial field at 1 and incrementing it every update
+            2. Using the format YYYYMMDDNN (YYYY is the year, MM is the month, DD is the day, and NN is the number of times the data was changed within that day)
+        - The refresh field tells the slave name servers how often to check to see if their data is updated (The number 3600 specifies seconds so therefore the slave name servers will check to see if their data is updated every hour)
+        - The retry field specifies the intervals between how often the slave name server would attempt to reconnect with the primary name server if it were to fail to connect initially
+        - The expire field tells the slave name server when to stop giving out zone data if the primary server could not be reached in that amount of seconds
+        - TTL stands for 'time to live' specifying how long other servers may cache the data for this zone
+      - The NS and PTR records follow the initial SOA record and are seperated by lines
 		- add lines `sudo nano /etc/bind/reverse.wcsc.com`
 		- ![reverse.wcsc.com alternative text](https://github.com/manwthglasses/BlueteamNotes/blob/master/.reversewcsc.jpg)
 - Verify 
